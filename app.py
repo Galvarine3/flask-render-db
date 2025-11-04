@@ -22,6 +22,21 @@ def inicializar_tabla():
     """)
     conn.commit()
     cur.close()
+
+    @app.route("/check_db")
+def check_db():
+    import psycopg2, os
+    try:
+        conn = psycopg2.connect(os.environ.get("DATABASE_URL"))
+        cur = conn.cursor()
+        cur.execute("SELECT NOW();")
+        result = cur.fetchone()
+        cur.close()
+        conn.close()
+        return f"✅ Conexión exitosa a la base de datos - hora: {result[0]}"
+    except Exception as e:
+        return f"❌ Error al conectar a la base de datos: {e}"
+
     conn.close()
 
 inicializar_tabla()
